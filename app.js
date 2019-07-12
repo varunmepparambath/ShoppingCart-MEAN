@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 let expressHBS=require('express-handlebars');
+let dbconfig=require('./dbconfig/db-connect');
 
 
 var indexRouter = require('./routes/index');
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/', indexRouter);
 
@@ -35,6 +37,15 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+db.connect(function (error) {
+  if(error){
+    console.log("Unable to connect database");
+    process.exit(1);
+  }
+  else{
+    console.log('Shopping Cart Database connected successfully.......')
+  }
 });
 
 module.exports = app;
